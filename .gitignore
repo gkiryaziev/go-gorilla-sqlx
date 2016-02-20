@@ -1,0 +1,6 @@
+.idea/
+.git/
+*.xmind
+
+bin/
+pkg/
