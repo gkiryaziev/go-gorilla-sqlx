@@ -22,4 +22,4 @@ SQLX is a package for Golang which provides a set of extensions on top of the ex
 #### 3. Edit configuration
   Copy `config.default.yaml` to `config.yaml` and edit configuration.
 #### 4. Build and Run project
-  `gb build -a server && bin/server`
+  `go build`
