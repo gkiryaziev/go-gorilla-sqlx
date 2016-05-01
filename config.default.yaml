@@ -1,0 +1,11 @@
+
+debug:           false
+db:
+  username:     "name"
+  userpassword: "password"
+  host:         "localhost"
+  port:         "3306"
+  database:     "db_name"
+host:
+  ip:           "localhost"
+  port:         "3000"

@@ -1,12 +1,12 @@
-package service
+package services
 
 import (
 	"errors"
 
 	"github.com/jmoiron/sqlx"
 
-	"../model"
-	"../util"
+	"../models"
+	"../utils"
 )
 
 type UserService struct {
@@ -14,61 +14,43 @@ type UserService struct {
 }
 
 func NewUserService(db *sqlx.DB) *UserService {
-	return &UserService{db}
+	return &UserService{db: db}
 }
 
 // get all users
-func (this *UserService) GetUsers() *util.ResultTransformer {
+func (this *UserService) GetUsers() *utils.ResultTransformer {
 
-	users := []model.User{}
+	users := []models.User{}
 
-	err := this.db.Select(&users, "select * from tbl_users order by id asc limit 25")
+	err := this.db.Select(&users, "select * from tbl_users order by id")
 	if err != nil {
 		panic(err)
 	}
 
-	header := model.Header{"ok", len(users), users}
-	result := util.NewResultTransformer(header)
+	header := models.Header{"ok", len(users), users}
+	result := utils.NewResultTransformer(header)
 
 	return result
 }
 
 // get user by id
-func (this *UserService) GetUser(id int64) (*util.ResultTransformer, error) {
+func (this *UserService) GetUser(id int64) (*utils.ResultTransformer, error) {
 
-	user := model.User{}
+	user := models.User{}
 
 	err := this.db.Get(&user, "select * from tbl_users where id = ?", id)
 	if err != nil {
 		return nil, err
 	}
 
-	header := model.Header{"ok", 1, user}
-	result := util.NewResultTransformer(header)
+	header := models.Header{"ok", 1, user}
+	result := utils.NewResultTransformer(header)
 
 	return result, nil
 }
 
-// insert new user and get last id
-func (this *UserService) InsertUser(user model.User) (int64, error) {
-
-	result, err := this.db.NamedExec("insert into tbl_users ("+
-		"first_name, last_name, middle_name, dob, address, phone, login, password) values ("+
-		":first_name, :last_name, :middle_name, :dob, :address, :phone, :login, :password)", user)
-	if err != nil {
-		return 0, err
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, err
-	}
-
-	return id, nil
-}
-
 // update user and get rows affected
-func (this *UserService) UpdateUser(user model.User) error {
+func (this *UserService) UpdateUser(user models.User) error {
 
 	result, err := this.db.NamedExec("update tbl_users set "+
 		"first_name=:first_name, last_name=:last_name, middle_name=:middle_name, "+
@@ -84,7 +66,7 @@ func (this *UserService) UpdateUser(user model.User) error {
 	}
 
 	if rows <= 0 {
-		return  errors.New("0 Rows Affected")
+		return errors.New("0 Rows Affected")
 	}
 
 	return nil
@@ -104,14 +86,14 @@ func (this *UserService) DeleteUserById(id int64) error {
 	}
 
 	if rows <= 0 {
-		return  errors.New("0 Rows Affected")
+		return errors.New("0 Rows Affected")
 	}
 
 	return nil
 }
 
 // delete user and get rows affected
-func (this *UserService) DeleteUser(user model.User) error {
+func (this *UserService) DeleteUser(user models.User) error {
 
 	result, err := this.db.NamedExec("delete from tbl_users where id = :id", user)
 	if err != nil {
@@ -124,8 +106,26 @@ func (this *UserService) DeleteUser(user model.User) error {
 	}
 
 	if rows <= 0 {
-		return  errors.New("0 Rows Affected")
+		return errors.New("0 Rows Affected")
 	}
 
 	return nil
+}
+
+// insert new user and get last id
+func (this *UserService) InsertUser(user models.User) (int64, error) {
+
+	result, err := this.db.NamedExec("insert into tbl_users ("+
+		"first_name, last_name, middle_name, dob, address, phone, login, password) values ("+
+		":first_name, :last_name, :middle_name, :dob, :address, :phone, :login, :password)", user)
+	if err != nil {
+		return 0, err
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }

@@ -1,6 +1,4 @@
+
 .idea/
 .git/
-*.xmind
-
-bin/
-pkg/
+config.yaml

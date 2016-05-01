@@ -1,10 +1,122 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-ng-app="crudApp">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CRUD Operations</title>
+    <link rel="stylesheet" href="src/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="src/fa/css/font-awesome.min.css">
 </head>
-<body>
-    Index
+<body data-ng-controller="crudCtrl">
+
+	<div class="container">
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <table class="table table-bordered">
+                    <tr>
+                        <td>
+                            <div class="input-group margin-bottom-sm">
+                                <span class="input-group-addon"><i class="fa fa-search" aria-hidden="true"></i></span>
+                                <input class="form-control" type="text" placeholder="search" data-ng-model="search">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Id</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Middle Name</th>
+                        <th>Birthday</th>
+                        <th>Address</th>
+                        <th>Phone</th>
+                        <th>Login</th>
+                        <th>Password</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    <tr data-ng-repeat="user in users | filter:search">
+                        <td>{{user.id}}</td>
+                        <td>{{user.first_name}}</td>
+                        <td>{{user.last_name}}</td>
+                        <td>{{user.middle_name}}</td>
+                        <td>{{user.dob}}</td>
+                        <td>{{user.address}}</td>
+                        <td>{{user.phone}}</td>
+                        <td>{{user.login}}</td>
+                        <td>{{user.password}}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" data-ng-click="userEdit(user.id)">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" data-ng-click="userDelete(user.id)">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+		<div class="row">
+			<div class="col-md-12 col-lg-12">
+				<table class="table table-bordered">
+					<tr>
+						<th colspan="4">User information</th>
+					</tr>
+					<tr>
+						<td>Id</td>
+						<td><input class="form-control" type="text" data-ng-model="id" readonly="readonly"></td>
+                        <td>Address</td>
+                        <td><input class="form-control" type="text" data-ng-model="address"></td>
+					</tr>
+					<tr>
+						<td>First Name</td>
+						<td><input class="form-control" type="text" data-ng-model="first_name"></td>
+                        <td>Phone</td>
+                        <td><input class="form-control" type="text" data-ng-model="phone"></td>
+					</tr>
+                    <tr>
+                        <td>Last Name</td>
+                        <td><input class="form-control" type="text" data-ng-model="last_name"></td>
+                        <td>Login</td>
+                        <td><input class="form-control" type="text" data-ng-model="login"></td>
+                    </tr>
+                    <tr>
+                        <td>Middle Name</td>
+                        <td><input class="form-control" type="text" data-ng-model="middle_name"></td>
+                        <td>Password</td>
+                        <td><input class="form-control" type="text" data-ng-model="password"></td>
+                    </tr>
+                    <tr>
+                        <td>Birthday</td>
+                        <td><input class="form-control" type="text" data-ng-model="dob"></td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+					<tr>
+						<td colspan="4">
+							<button class="btn btn-info" data-ng-click="userNew()">
+                                <i class="fa fa-plus-circle" aria-hidden="true"></i> Add
+                            </button>
+							<button class="btn btn-success" data-ng-click="userSave()">
+                                <i class="fa fa-check-circle" aria-hidden="true"></i> Save
+                            </button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+
+    <script src="src/angular/angular.min.js"></script>
+	<script src="src/jquery/jquery-2.2.3.min.js"></script>
+	<script src="src/bootstrap/js/bootstrap.min.js"></script>
+    <script src="crud.js"></script>
 </body>
 </html>

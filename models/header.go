@@ -1,4 +1,4 @@
-package model
+package models
 
 type Header struct {
 	Status string      `json:"status"`

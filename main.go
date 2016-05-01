@@ -5,14 +5,16 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/codegangsta/negroni"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/jmoiron/sqlx"
 	"github.com/gorilla/mux"
+	"github.com/jmoiron/sqlx"
 
-	"./controller"
+	"./conf"
+	"./handlers"
 )
 
-func CheckError(err error) {
+func checkError(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -20,45 +22,52 @@ func CheckError(err error) {
 
 func main() {
 
-	mx := mux.NewRouter()
-
-	// variables
-	db_user_name := "admin"
-	db_user_password := "admin"
-	db_host := "192.168.2.11"
-	db_port := "3306"
-	db_database := "db_social"
-	http_host := ""
-	http_port := "8008"
+	// load config
+	config, err := conf.NewConfig("config.yaml").Load()
+	checkError(err)
 
 	// mysql connection string
 	mysql_bind := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True",
-		db_user_name, db_user_password, db_host, db_port, db_database)
+		config.DB.UserName,
+		config.DB.UserPassword,
+		config.DB.Host,
+		config.DB.Port,
+		config.DB.Database,
+	)
 
 	// http server address and port
-	http_bind := fmt.Sprintf("%s:%s", http_host, http_port)
+	hostBind := fmt.Sprintf("%s:%s",
+		config.Host.IP,
+		config.Host.Port,
+	)
 
 	// open connection to database
 	db, err := sqlx.Connect("mysql", mysql_bind)
 	db.SetMaxIdleConns(100)
-	CheckError(err)
+	checkError(err)
 	defer db.Close()
 
-	// controllers
-	userController := controller.NewUserController(db)
+	// handlers
+	userHandler := handlers.NewUserHandler(db)
+
+	mx := mux.NewRouter()
 
 	// user handler
-	mx.HandleFunc("/api/v2/users",userController.GetUsers).Methods("GET")
-	mx.HandleFunc("/api/v2/users/{id}",userController.GetUser).Methods("GET")
-	mx.HandleFunc("/api/v2/users",userController.InsertUser).Methods("POST")
-	mx.HandleFunc("/api/v2/users",userController.UpdateUser).Methods("PUT")
-	mx.HandleFunc("/api/v2/users/{id}",userController.DeleteUser).Methods("DELETE")
+	mx.HandleFunc("/api/v1/users", userHandler.GetUsers).Methods("GET")
+	mx.HandleFunc("/api/v1/users/{id}", userHandler.GetUser).Methods("GET")
+	mx.HandleFunc("/api/v1/users", userHandler.UpdateUser).Methods("PUT")
+	mx.HandleFunc("/api/v1/users/{id}", userHandler.DeleteUser).Methods("DELETE")
+	mx.HandleFunc("/api/v1/users", userHandler.InsertUser).Methods("POST")
 
 	// static
 	mx.PathPrefix("/").Handler(http.FileServer(http.Dir("public")))
 
-	// start http server
-	fmt.Println("Listening on " + http_bind)
-	err = http.ListenAndServe(http_bind, mx)
-	CheckError(err)
+	// negroni
+	ng := negroni.New()
+	ng.UseHandler(mx)
+
+	// start server
+	log.Println("Listening on", hostBind)
+	err = http.ListenAndServe(hostBind, ng)
+	checkError(err)
 }
