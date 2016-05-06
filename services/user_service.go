@@ -5,24 +5,25 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	"../models"
-	"../utils"
+	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/models"
+	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/utils"
 )
 
 type UserService struct {
 	db *sqlx.DB
 }
 
+// NewUserService return new UserService object
 func NewUserService(db *sqlx.DB) *UserService {
 	return &UserService{db: db}
 }
 
-// get all users
-func (this *UserService) GetUsers() *utils.ResultTransformer {
+// GetUsers return all users
+func (us *UserService) GetUsers() *utils.ResultTransformer {
 
 	users := []models.User{}
 
-	err := this.db.Select(&users, "select * from tbl_users order by id")
+	err := us.db.Select(&users, "select * from tbl_users order by id")
 	if err != nil {
 		panic(err)
 	}
@@ -33,12 +34,12 @@ func (this *UserService) GetUsers() *utils.ResultTransformer {
 	return result
 }
 
-// get user by id
-func (this *UserService) GetUser(id int64) (*utils.ResultTransformer, error) {
+// GetUser return user by id
+func (us *UserService) GetUser(id int64) (*utils.ResultTransformer, error) {
 
 	user := models.User{}
 
-	err := this.db.Get(&user, "select * from tbl_users where id = ?", id)
+	err := us.db.Get(&user, "select * from tbl_users where id = ?", id)
 	if err != nil {
 		return nil, err
 	}
@@ -49,10 +50,10 @@ func (this *UserService) GetUser(id int64) (*utils.ResultTransformer, error) {
 	return result, nil
 }
 
-// update user and get rows affected
-func (this *UserService) UpdateUser(user models.User) error {
+// UpdateUser update user and get rows affected
+func (us *UserService) UpdateUser(user models.User) error {
 
-	result, err := this.db.NamedExec("update tbl_users set "+
+	result, err := us.db.NamedExec("update tbl_users set "+
 		"first_name=:first_name, last_name=:last_name, middle_name=:middle_name, "+
 		"dob=:dob, address=:address, phone=:phone, login=:login, password=:password "+
 		"where id=:id", user)
@@ -72,10 +73,10 @@ func (this *UserService) UpdateUser(user models.User) error {
 	return nil
 }
 
-// delete user by id and get rows affected
-func (this *UserService) DeleteUserById(id int64) error {
+// DeleteUserById delete user by id and get rows affected
+func (us *UserService) DeleteUserById(id int64) error {
 
-	result, err := this.db.NamedExec("delete from tbl_users where id = :id", map[string]interface{}{"id": id})
+	result, err := us.db.NamedExec("delete from tbl_users where id = :id", map[string]interface{}{"id": id})
 	if err != nil {
 		return err
 	}
@@ -92,10 +93,10 @@ func (this *UserService) DeleteUserById(id int64) error {
 	return nil
 }
 
-// delete user and get rows affected
-func (this *UserService) DeleteUser(user models.User) error {
+// DeleteUser delete user and get rows affected
+func (us *UserService) DeleteUser(user models.User) error {
 
-	result, err := this.db.NamedExec("delete from tbl_users where id = :id", user)
+	result, err := us.db.NamedExec("delete from tbl_users where id = :id", user)
 	if err != nil {
 		return err
 	}
@@ -112,10 +113,10 @@ func (this *UserService) DeleteUser(user models.User) error {
 	return nil
 }
 
-// insert new user and get last id
-func (this *UserService) InsertUser(user models.User) (int64, error) {
+// InsertUser insert new user and get last id
+func (us *UserService) InsertUser(user models.User) (int64, error) {
 
-	result, err := this.db.NamedExec("insert into tbl_users ("+
+	result, err := us.db.NamedExec("insert into tbl_users ("+
 		"first_name, last_name, middle_name, dob, address, phone, login, password) values ("+
 		":first_name, :last_name, :middle_name, :dob, :address, :phone, :login, :password)", user)
 	if err != nil {

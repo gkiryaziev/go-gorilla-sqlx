@@ -10,10 +10,11 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 
-	"./conf"
-	"./handlers"
+	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/conf"
+	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/handlers"
 )
 
+// checkError check errors
 func checkError(err error) {
 	if err != nil {
 		log.Fatal(err)

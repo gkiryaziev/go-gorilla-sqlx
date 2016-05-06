@@ -9,26 +9,27 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 
-	"../models"
-	"../models/message"
-	"../services"
-	"../utils"
+	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/models"
+	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/models/message"
+	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/services"
+	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/utils"
 )
 
 type userHandler struct {
 	service *services.UserService
 }
 
+// NewUserHandler return new userHandler object
 func NewUserHandler(db *sqlx.DB) *userHandler {
 	return &userHandler{services.NewUserService(db)}
 }
 
-// get all users
-func (this *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
+// GetUsers return all users
+func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
-	users, err := this.service.GetUsers().ToJson()
+	users, err := uh.service.GetUsers().ToJson()
 	if err != nil {
 		w.WriteHeader(500)
 		fmt.Fprint(w, ErrorMessage(500, err.Error()))
@@ -39,8 +40,8 @@ func (this *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, users)
 }
 
-// get user by id
-func (this *userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
+// GetUser return user by id
+func (uh *userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
@@ -54,7 +55,7 @@ func (this *userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get user by id
-	user, err := this.service.GetUser(id)
+	user, err := uh.service.GetUser(id)
 	if err != nil {
 		w.WriteHeader(400)
 		fmt.Fprint(w, ErrorMessage(400, err.Error()))
@@ -72,8 +73,8 @@ func (this *userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, json)
 }
 
-// update user
-func (this *userHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
+// UpdateUser update user
+func (uh *userHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
@@ -95,7 +96,7 @@ func (this *userHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = this.service.UpdateUser(user)
+	err = uh.service.UpdateUser(user)
 	if err != nil {
 		w.WriteHeader(400)
 		fmt.Fprint(w, ErrorMessage(400, err.Error()))
@@ -105,8 +106,8 @@ func (this *userHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 }
 
-// delete user
-func (this *userHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
+// DeleteUser delete user
+func (uh *userHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
@@ -119,7 +120,7 @@ func (this *userHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = this.service.DeleteUserById(id)
+	err = uh.service.DeleteUserById(id)
 	if err != nil {
 		w.WriteHeader(400)
 		fmt.Fprint(w, ErrorMessage(400, err.Error()))
@@ -129,8 +130,8 @@ func (this *userHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 }
 
-// insert new user into database
-func (this *userHandler) InsertUser(w http.ResponseWriter, r *http.Request) {
+// InsertUser insert new user into database
+func (uh *userHandler) InsertUser(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
@@ -152,7 +153,7 @@ func (this *userHandler) InsertUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = this.service.InsertUser(user)
+	_, err = uh.service.InsertUser(user)
 	if err != nil {
 		w.WriteHeader(500)
 		fmt.Fprint(w, ErrorMessage(500, err.Error()))
@@ -162,7 +163,7 @@ func (this *userHandler) InsertUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 }
 
-// return message as json string
+// ErrorMessage return error message as json string
 func ErrorMessage(status int, msg string) string {
 	msg_final := &message.ResponseMessage{status, msg, "/docs/api/errors"}
 	result, _ := utils.NewResultTransformer(msg_final).ToJson()
