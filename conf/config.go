@@ -17,8 +17,8 @@ func NewConfig(file string) *ConfigManager {
 }
 
 // Load config from file
-func (c *ConfigManager) Load() (*Config, error) {
-	data, err := ioutil.ReadFile(c.file)
+func (cm *ConfigManager) Load() (*Config, error) {
+	data, err := ioutil.ReadFile(cm.file)
 	if err != nil {
 		return nil, err
 	}
