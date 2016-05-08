@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 )
 
+// ResultTransformer structure
 type ResultTransformer struct {
 	value interface{}
 }
@@ -14,19 +15,19 @@ func NewResultTransformer(value interface{}) *ResultTransformer {
 }
 
 // Set value
-func (this *ResultTransformer) Set(value interface{}) {
-	this.value = value
+func (rt *ResultTransformer) Set(value interface{}) {
+	rt.value = value
 }
 
 // Get value
-func (this *ResultTransformer) Get() interface{} {
-	return this.value
+func (rt *ResultTransformer) Get() interface{} {
+	return rt.value
 }
 
 // ToJson return json
-func (this *ResultTransformer) ToJson() (string, error) {
+func (rt *ResultTransformer) ToJson() (string, error) {
 
-	json, err := json.MarshalIndent(this.value, "", "  ")
+	json, err := json.Marshal(rt.value)
 	if err != nil {
 		return "", err
 	}
