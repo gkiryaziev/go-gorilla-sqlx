@@ -15,21 +15,22 @@ import (
 	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/utils"
 )
 
-type userHandler struct {
+// UserHandler struct
+type UserHandler struct {
 	service *services.UserService
 }
 
-// NewUserHandler return new userHandler object
-func NewUserHandler(db *sqlx.DB) *userHandler {
-	return &userHandler{services.NewUserService(db)}
+// NewUserHandler return new UserHandler object
+func NewUserHandler(db *sqlx.DB) *UserHandler {
+	return &UserHandler{services.NewUserService(db)}
 }
 
 // GetUsers return all users
-func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
+func (uh *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
-	users, err := uh.service.GetUsers().ToJson()
+	users, err := uh.service.GetUsers().ToJSON()
 	if err != nil {
 		w.WriteHeader(500)
 		fmt.Fprint(w, ErrorMessage(500, err.Error()))
@@ -41,7 +42,7 @@ func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetUser return user by id
-func (uh *userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
+func (uh *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
@@ -62,7 +63,7 @@ func (uh *userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json, err := user.ToJson()
+	json, err := user.ToJSON()
 	if err != nil {
 		w.WriteHeader(500)
 		fmt.Fprint(w, ErrorMessage(500, err.Error()))
@@ -74,7 +75,7 @@ func (uh *userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // UpdateUser update user
-func (uh *userHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
+func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
@@ -107,7 +108,7 @@ func (uh *userHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // DeleteUser delete user
-func (uh *userHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
+func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
@@ -120,7 +121,7 @@ func (uh *userHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = uh.service.DeleteUserById(id)
+	err = uh.service.DeleteUserByID(id)
 	if err != nil {
 		w.WriteHeader(400)
 		fmt.Fprint(w, ErrorMessage(400, err.Error()))
@@ -131,7 +132,7 @@ func (uh *userHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // InsertUser insert new user into database
-func (uh *userHandler) InsertUser(w http.ResponseWriter, r *http.Request) {
+func (uh *UserHandler) InsertUser(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
@@ -165,7 +166,7 @@ func (uh *userHandler) InsertUser(w http.ResponseWriter, r *http.Request) {
 
 // ErrorMessage return error message as json string
 func ErrorMessage(status int, msg string) string {
-	msg_final := &message.ResponseMessage{status, msg, "/docs/api/errors"}
-	result, _ := utils.NewResultTransformer(msg_final).ToJson()
+	msgFinal := &message.ResponseMessage{Status: status, Message: msg, Info: "/docs/api/errors"}
+	result, _ := utils.NewResultTransformer(msgFinal).ToJSON()
 	return result
 }

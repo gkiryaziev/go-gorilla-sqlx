@@ -24,8 +24,8 @@ func (rt *ResultTransformer) Get() interface{} {
 	return rt.value
 }
 
-// ToJson return json
-func (rt *ResultTransformer) ToJson() (string, error) {
+// ToJSON return json
+func (rt *ResultTransformer) ToJSON() (string, error) {
 
 	json, err := json.Marshal(rt.value)
 	if err != nil {

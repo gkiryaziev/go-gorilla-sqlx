@@ -9,6 +9,7 @@ import (
 	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/utils"
 )
 
+// UserService struct
 type UserService struct {
 	db *sqlx.DB
 }
@@ -28,7 +29,7 @@ func (us *UserService) GetUsers() *utils.ResultTransformer {
 		panic(err)
 	}
 
-	header := models.Header{"ok", len(users), users}
+	header := models.Header{Status: "ok", Count: len(users), Data: users}
 	result := utils.NewResultTransformer(header)
 
 	return result
@@ -44,7 +45,7 @@ func (us *UserService) GetUser(id int64) (*utils.ResultTransformer, error) {
 		return nil, err
 	}
 
-	header := models.Header{"ok", 1, user}
+	header := models.Header{Status: "ok", Count: 1, Data: user}
 	result := utils.NewResultTransformer(header)
 
 	return result, nil
@@ -73,8 +74,8 @@ func (us *UserService) UpdateUser(user models.User) error {
 	return nil
 }
 
-// DeleteUserById delete user by id and get rows affected
-func (us *UserService) DeleteUserById(id int64) error {
+// DeleteUserByID delete user by id and get rows affected
+func (us *UserService) DeleteUserByID(id int64) error {
 
 	result, err := us.db.NamedExec("delete from tbl_users where id = :id", map[string]interface{}{"id": id})
 	if err != nil {

@@ -28,7 +28,7 @@ func main() {
 	checkError(err)
 
 	// mysql connection string
-	mysql_bind := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True",
+	mysqlBind := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True",
 		config.DB.UserName,
 		config.DB.UserPassword,
 		config.DB.Host,
@@ -43,7 +43,7 @@ func main() {
 	)
 
 	// open connection to database
-	db, err := sqlx.Connect("mysql", mysql_bind)
+	db, err := sqlx.Connect("mysql", mysqlBind)
 	db.SetMaxIdleConns(100)
 	checkError(err)
 	defer db.Close()
