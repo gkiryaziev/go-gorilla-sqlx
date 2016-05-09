@@ -17,7 +17,7 @@ func TestToJson(t *testing.T) {
 	}}
 
 	for _, test := range tests {
-		result, err := NewResultTransformer(test.data).ToJson()
+		result, err := NewResultTransformer(test.data).ToJSON()
 		if err != nil {
 			t.Fatal(err)
 		}
