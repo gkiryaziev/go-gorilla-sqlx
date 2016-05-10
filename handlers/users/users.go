@@ -5,8 +5,8 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/models"
-	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/utils"
+	"github.com/gkiryaziev/go-gorilla-sqlx/models"
+	"github.com/gkiryaziev/go-gorilla-sqlx/utils"
 )
 
 // UserHandler struct

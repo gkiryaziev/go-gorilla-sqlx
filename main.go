@@ -10,8 +10,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 
-	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/conf"
-	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/handlers/users"
+	"github.com/gkiryaziev/go-gorilla-sqlx/conf"
+	"github.com/gkiryaziev/go-gorilla-sqlx/handlers/users"
 )
 
 // checkError check errors

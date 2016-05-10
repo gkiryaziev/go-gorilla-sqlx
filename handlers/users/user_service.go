@@ -3,8 +3,8 @@ package users
 import (
 	"errors"
 
-	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/models"
-	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/utils"
+	"github.com/gkiryaziev/go-gorilla-sqlx/models"
+	"github.com/gkiryaziev/go-gorilla-sqlx/utils"
 )
 
 // getUsers return all users from db
