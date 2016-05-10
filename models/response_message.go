@@ -1,4 +1,4 @@
-package message
+package models
 
 // ResponseMessage struct
 type ResponseMessage struct {

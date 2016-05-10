@@ -11,7 +11,7 @@ import (
 	"github.com/jmoiron/sqlx"
 
 	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/conf"
-	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/handlers"
+	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/handlers/users"
 )
 
 // checkError check errors
@@ -44,12 +44,12 @@ func main() {
 
 	// open connection to database
 	db, err := sqlx.Connect("mysql", mysqlBind)
-	db.SetMaxIdleConns(100)
 	checkError(err)
+	db.SetMaxIdleConns(100)
 	defer db.Close()
 
 	// handlers
-	userHandler := handlers.NewUserHandler(db)
+	userHandler := users.NewUserHandler(db)
 
 	mx := mux.NewRouter()
 

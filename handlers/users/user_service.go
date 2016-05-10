@@ -1,34 +1,20 @@
-package services
+package users
 
 import (
 	"errors"
-	"sync"
-
-	"github.com/jmoiron/sqlx"
 
 	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/models"
 	"github.com/gkiryaziev/go-gorilla-mysql-sqlx-example/utils"
 )
 
-// UserService struct
-type UserService struct {
-	db  *sqlx.DB
-	lck sync.RWMutex
-}
-
-// NewUserService return new UserService object
-func NewUserService(db *sqlx.DB) *UserService {
-	return &UserService{db: db}
-}
-
-// GetUsers return all users
-func (us *UserService) GetUsers() *utils.ResultTransformer {
+// getUsers return all users from db
+func (us *UserHandler) getUsers() *utils.ResultTransformer {
 
 	// concurrency safe
 	us.lck.RLock()
 	defer us.lck.RUnlock()
 
-	users := []models.User{}
+	users := []User{}
 
 	err := us.db.Select(&users, "select * from tbl_users order by id")
 	if err != nil {
@@ -41,14 +27,14 @@ func (us *UserService) GetUsers() *utils.ResultTransformer {
 	return result
 }
 
-// GetUser return user by id
-func (us *UserService) GetUser(id int64) (*utils.ResultTransformer, error) {
+// getUser return user by id from db
+func (us *UserHandler) getUser(id int64) (*utils.ResultTransformer, error) {
 
 	// concurrency safe
 	us.lck.RLock()
 	defer us.lck.RUnlock()
 
-	user := models.User{}
+	user := User{}
 
 	err := us.db.Get(&user, "select * from tbl_users where id = ?", id)
 	if err != nil {
@@ -61,8 +47,8 @@ func (us *UserService) GetUser(id int64) (*utils.ResultTransformer, error) {
 	return result, nil
 }
 
-// UpdateUser update user and get rows affected
-func (us *UserService) UpdateUser(user models.User) error {
+// updateUser update user and get rows affected in db
+func (us *UserHandler) updateUser(user User) error {
 
 	// concurrency safe
 	us.lck.Lock()
@@ -88,8 +74,8 @@ func (us *UserService) UpdateUser(user models.User) error {
 	return nil
 }
 
-// DeleteUserByID delete user by id and get rows affected
-func (us *UserService) DeleteUserByID(id int64) error {
+// deleteUserByID delete user by id and get rows affected in db
+func (us *UserHandler) deleteUserByID(id int64) error {
 
 	// concurrency safe
 	us.lck.Lock()
@@ -112,8 +98,8 @@ func (us *UserService) DeleteUserByID(id int64) error {
 	return nil
 }
 
-// DeleteUser delete user and get rows affected
-func (us *UserService) DeleteUser(user models.User) error {
+// deleteUser delete user and get rows affected in db
+func (us *UserHandler) deleteUser(user User) error {
 
 	// concurrency safe
 	us.lck.Lock()
@@ -136,8 +122,8 @@ func (us *UserService) DeleteUser(user models.User) error {
 	return nil
 }
 
-// InsertUser insert new user and get last id
-func (us *UserService) InsertUser(user models.User) (int64, error) {
+// insertUser insert new user and get last id from db
+func (us *UserHandler) insertUser(user User) (int64, error) {
 
 	// concurrency safe
 	us.lck.Lock()
