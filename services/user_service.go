@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"sync"
 
 	"github.com/jmoiron/sqlx"
 
@@ -11,7 +12,8 @@ import (
 
 // UserService struct
 type UserService struct {
-	db *sqlx.DB
+	db  *sqlx.DB
+	lck sync.RWMutex
 }
 
 // NewUserService return new UserService object
@@ -21,6 +23,10 @@ func NewUserService(db *sqlx.DB) *UserService {
 
 // GetUsers return all users
 func (us *UserService) GetUsers() *utils.ResultTransformer {
+
+	// concurrency safe
+	us.lck.RLock()
+	defer us.lck.RUnlock()
 
 	users := []models.User{}
 
@@ -38,6 +44,10 @@ func (us *UserService) GetUsers() *utils.ResultTransformer {
 // GetUser return user by id
 func (us *UserService) GetUser(id int64) (*utils.ResultTransformer, error) {
 
+	// concurrency safe
+	us.lck.RLock()
+	defer us.lck.RUnlock()
+
 	user := models.User{}
 
 	err := us.db.Get(&user, "select * from tbl_users where id = ?", id)
@@ -53,6 +63,10 @@ func (us *UserService) GetUser(id int64) (*utils.ResultTransformer, error) {
 
 // UpdateUser update user and get rows affected
 func (us *UserService) UpdateUser(user models.User) error {
+
+	// concurrency safe
+	us.lck.Lock()
+	defer us.lck.Unlock()
 
 	result, err := us.db.NamedExec("update tbl_users set "+
 		"first_name=:first_name, last_name=:last_name, middle_name=:middle_name, "+
@@ -77,6 +91,10 @@ func (us *UserService) UpdateUser(user models.User) error {
 // DeleteUserByID delete user by id and get rows affected
 func (us *UserService) DeleteUserByID(id int64) error {
 
+	// concurrency safe
+	us.lck.Lock()
+	defer us.lck.Unlock()
+
 	result, err := us.db.NamedExec("delete from tbl_users where id = :id", map[string]interface{}{"id": id})
 	if err != nil {
 		return err
@@ -97,6 +115,10 @@ func (us *UserService) DeleteUserByID(id int64) error {
 // DeleteUser delete user and get rows affected
 func (us *UserService) DeleteUser(user models.User) error {
 
+	// concurrency safe
+	us.lck.Lock()
+	defer us.lck.Unlock()
+
 	result, err := us.db.NamedExec("delete from tbl_users where id = :id", user)
 	if err != nil {
 		return err
@@ -116,6 +138,10 @@ func (us *UserService) DeleteUser(user models.User) error {
 
 // InsertUser insert new user and get last id
 func (us *UserService) InsertUser(user models.User) (int64, error) {
+
+	// concurrency safe
+	us.lck.Lock()
+	defer us.lck.Unlock()
 
 	result, err := us.db.NamedExec("insert into tbl_users ("+
 		"first_name, last_name, middle_name, dob, address, phone, login, password) values ("+
