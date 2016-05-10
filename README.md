@@ -18,7 +18,7 @@ MVW Framework for frontend.
 
 ### Install:
 ```
-go get github.com/gkiryaziev/go-gorilla-mysql-sqlx-example
+go get -u github.com/gkiryaziev/go-gorilla-sqlx
 ```
 
 ### Edit configuration
@@ -28,5 +28,5 @@ Copy `config.default.yaml` to `config.yaml` and edit configuration.
 
 ### Build and Run:
 ```
-go build && go-gorilla-mysql-sqlx-example
+go build && go-gorilla-sqlx
 ```
