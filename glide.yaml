@@ -1,0 +1,17 @@
+package: github.com/gkiryaziev/go-gorilla-sqlx
+import:
+- package: github.com/codegangsta/negroni
+  subpackages:
+  - github.com\codegangsta\negroni
+- package: github.com/go-sql-driver/mysql
+  subpackages:
+  - github.com\go-sql-driver\mysql
+- package: github.com/gorilla/mux
+  subpackages:
+  - github.com\gorilla\mux
+- package: github.com/jmoiron/sqlx
+  subpackages:
+  - github.com\jmoiron\sqlx
+- package: gopkg.in/yaml.v2
+  subpackages:
+  - gopkg.in\yaml.v2
